@@ -7,6 +7,17 @@ import (
 // Error represents errors when handling phone numbers
 type Error string
 
+var mapNumberError = map[int]string{
+	0: "No parsing error",
+	1: "Invalid country code",
+	2: "Not a number",
+	3: "Too short after International Direct Dial Prefixes",
+	4: "Too short National Significant Number",
+	5: "Too long National Significant Number",
+	6: "Invalid number",
+	7: "Invalid number for region code",
+}
+
 // Error implements error interface
 func (e *Error) Error() string {
 	return string(*e)

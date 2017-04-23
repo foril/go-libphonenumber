@@ -21,6 +21,12 @@ type PhoneNumber struct {
 	Error *Error `json:"error"`
 	// If the number was valid in the first place
 	Valid bool `json:"valid"`
+	//Country code
+	CountryCode C.int `json:"countryCode"`
+	// Number Type ex : MOBILE
+	NumberType string `json:"numberType"`
+	// Region Code ex : US
+	RegionCode string `json:"regionCode"`
 }
 
 func phoneNumberInfoFromCStruct(info *C.struct_phone_info) PhoneNumber {
@@ -29,8 +35,8 @@ func phoneNumberInfoFromCStruct(info *C.struct_phone_info) PhoneNumber {
 		return pn
 	}
 	pn.Valid = info.valid != 0
-	if info.error != nil {
-		pn.Error = NewError(C.GoString(info.error))
+	if info.error != 0 {
+		pn.Error = NewError(mapNumberError[int(info.error)])
 	}
 	if info.number != nil {
 		pn.Number = C.GoString(info.number)
@@ -38,6 +44,11 @@ func phoneNumberInfoFromCStruct(info *C.struct_phone_info) PhoneNumber {
 	if info.normalized != nil {
 		normalized := C.GoString(info.normalized)
 		pn.Normalized = &normalized
+	}
+	pn.CountryCode = info.countryCode
+	pn.NumberType = mapNumberType[int(info.numberType)]
+	if info.regionCode != nil {
+		pn.RegionCode = C.GoString(info.regionCode)
 	}
 
 	return pn

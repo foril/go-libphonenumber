@@ -1,34 +1,36 @@
-package phonenumber
+package phonenumber_test
 
 import (
 	"encoding/json"
 	"runtime"
 	"testing"
+
+	"github.com/foril/go-libphonenumber"
 )
 
 func TestIsPossiblePhoneNumber(t *testing.T) {
 	num := "+358401231234"
 	region := "FI"
-	if !IsPossibleNumber(num, region) {
+	if !phonenumber.IsPossibleNumber(num, region) {
 		t.Error(num, "was not valid")
 	}
 	num = "asd"
-	if IsPossibleNumber(num, region) {
+	if phonenumber.IsPossibleNumber(num, region) {
 		t.Error(num, "was valid")
 	}
 	num = ""
-	if IsPossibleNumber(num, region) {
+	if phonenumber.IsPossibleNumber(num, region) {
 		t.Error(num, "was valid")
 	}
 	num = "0401231234"
-	if !IsPossibleNumber(num, region) {
+	if !phonenumber.IsPossibleNumber(num, region) {
 		t.Error(num, "was not valid in", region)
 	}
 	runtime.GC()
 }
 
 func TestParse(t *testing.T) {
-	res := Parse("+358401231234", "FI")
+	res := phonenumber.Parse("+358401231234", "FI")
 	if !res.Valid {
 		t.Error("Was not valid")
 	}
@@ -42,7 +44,7 @@ func TestParse(t *testing.T) {
 		t.Error("Got unexpected erro", res.Error)
 	}
 	runtime.GC()
-	res = Parse("+358-40-123 1234", "FI")
+	res = phonenumber.Parse("+358-40-123 1234", "FI")
 	if !res.Valid {
 		t.Error("Was not valid")
 	}
@@ -56,7 +58,7 @@ func TestParse(t *testing.T) {
 		t.Error("Got unexpected erro", res.Error)
 	}
 	runtime.GC()
-	res = Parse("acdegwerigh qepgj fqwpeg", "FI")
+	res = phonenumber.Parse("acdegwerigh qepgj fqwpeg", "FI")
 	if res.Valid {
 		t.Error("Was valid when should not")
 	}
@@ -73,9 +75,9 @@ func TestParse(t *testing.T) {
 }
 
 func TestJSONMarshal(t *testing.T) {
-	info := PhoneNumber{
+	info := phonenumber.PhoneNumber{
 		Valid:      false,
-		Error:      NewError("decoding failed"),
+		Error:      phonenumber.NewError("decoding failed"),
 		Number:     "abadogjwprj",
 		Normalized: nil,
 	}
@@ -84,7 +86,7 @@ func TestJSONMarshal(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(string(data))
-	parsedInfo := PhoneNumber{}
+	parsedInfo := phonenumber.PhoneNumber{}
 	err = json.Unmarshal(data, &parsedInfo)
 	if err != nil {
 		t.Fatal(err)
@@ -94,7 +96,7 @@ func TestJSONMarshal(t *testing.T) {
 	}
 
 	normalized := "+358401231234"
-	info = PhoneNumber{
+	info = phonenumber.PhoneNumber{
 		Valid:      true,
 		Error:      nil,
 		Number:     "+358 40 123 1234",
@@ -105,7 +107,7 @@ func TestJSONMarshal(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(string(data))
-	parsedInfo = PhoneNumber{}
+	parsedInfo = phonenumber.PhoneNumber{}
 	err = json.Unmarshal(data, &parsedInfo)
 	if err != nil {
 		t.Fatal(err)

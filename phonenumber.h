@@ -6,8 +6,11 @@ extern "C" {
 struct phone_info {
   char* number;
   char* normalized;
-  char* error;
+  int error;
   int valid;
+  int countryCode;
+  int numberType;
+  char* regionCode;
 };
 struct phone_info* new_phone_info(char*);
 void free_phone_info(struct phone_info*);
@@ -18,7 +21,9 @@ char* allocAndCopyStr(const char* src);
 // Public api
 int is_possible_number(char* number, char* region);
 struct phone_info* parse(char* number, char* region);
-char* get_country_code(char* number);
+int get_country_code(char* number);
+char* get_region_code(char* number);
+int get_number_type(char* number);
 
 #ifdef __cplusplus
 }

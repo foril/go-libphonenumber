@@ -2,7 +2,7 @@ package phonenumber_test
 
 import (
 	"fmt"
-	"github.com/Applifier/go-libphonenumber"
+	"github.com/foril/go-libphonenumber"
 )
 
 func ExampleParse() {

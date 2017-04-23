@@ -15,10 +15,11 @@ import (
 	"unsafe"
 )
 
-// CountryCode returns the country code for the supplied number / ex : 1, 33, 31 .....
-func CountryCode(number string) C.int {
+// CountryCode returns the country code for the supplied number / ex : FR, US, BE .....
+func RegionCode(number string) string {
 	cNum := C.CString(number)
 	defer C.free(unsafe.Pointer(cNum))
-	res := C.get_country_code(cNum)
-	return res
+	res := C.get_region_code(cNum)
+	defer C.free(unsafe.Pointer(res))
+	return C.GoString(res)
 }
